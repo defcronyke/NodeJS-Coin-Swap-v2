@@ -1,64 +1,6 @@
 var https = require("https"),
 	fs	 = require("fs");
 
-/*
-// Get a new userkey cookie and save it to disk.
-func Get_userkey_cookie(activation_code string) *http.Cookie {
-
-    var result *http.Cookie
-
-    tr := &http.Transport{
-        TLSClientConfig: &tls.Config{InsecureSkipVerify : true},
-    }
-    client := &http.Client{Transport: tr}
-    // api url that responds with json data
-    url := "https://api.coin-swap.net/initialize/" + activation_code
-
-    // Request the url response which will be in the form of json
-    urlResponse, urlError := client.Get(url)
-
-    // Check if there was an error:
-    if urlError != nil {
-        fmt.Printf("Url Error: %v\n", urlError)
-        return result
-    }
-    
-    apiResponse,apiError := ioutil.ReadAll(urlResponse.Body)
-    urlResponse.Body.Close() // Close the url request
-    // Check if there was an error
-    if apiError != nil {
-        fmt.Printf("API Error: %v\n", apiError)
-        return result
-    }
-    _ = apiResponse
-    //fmt.Printf("API Response: %v\n", apiResponse)
-    
-    fmt.Printf("Cookies:\n")
-    
-    got_userkey := false
-    var userkey *http.Cookie
-    for c_num, c := range urlResponse.Cookies() {
-        fmt.Printf("%v:\n  Name: %v\n  Value: %v\n\n",c_num, c.Name, c.Value)
-        
-        if c.Name == "userkey" {
-            got_userkey = true
-            userkey = c
-            break
-        }
-    }
-    
-    if !got_userkey {
-        fmt.Printf("Cookie Error: Didn't get a userkey cookie from server.\n")
-        return result
-    }
-    
-    result = userkey
-    Save_cookie(userkey)
-    
-    return result
-} 
-*/
-
 var Save_cookie = function(cookie, callback) {
 	
 	fs.writeFile("./userkey.cookie", cookie, {mode: 384}, function(err) {
@@ -119,30 +61,43 @@ var Get_userkey_cookie = function(activation_code, callback) {
 	https.request(options, httpsclient_callback).end();
 };
 
+var Load_cookie = function(filename, callback) {
+	
+	fs.readFile(filename, 'utf8', function(err, data) {
+		if (err) {
+			console.log("File Read Error: %s", err);
+			return;
+		}
+
+		console.log("Loaded %s from disk: %s", filename, data);
+		callback(data);
+	});
+};
+
 var Load_userkey_cookie = function(config, callback) {
 	
 	var result;
-	if (!fs.existsSync("./userkey.cookie")) {
+	if (!fs.existsSync("./userkey.cookie")) {								// If userkey.cookie file isn't found on disk.
 		
 		console.log("Userkey cookie not found. Attempting to get a new one.");
 		
-		if (config.initkey === "") {
+		if (config.initkey === "") {										// If the user hasn't yet filled in the initkey section of the config file.
 			
 			console.log("Error: You need to specify your activation key in the config file's initkey section.");
 		
-		} else {
+		} else {															// If the initkey is present in the config file.
 			
-			Get_userkey_cookie(config.initkey, function(userkey_cookie) {
+			Get_userkey_cookie(config.initkey, function(userkey_cookie) {	// Get a new userkey.cookie from Coin-Swap.
 				
-				if (userkey_cookie === "") {
+				if (userkey_cookie === "") {								// If Coin-Swap didn't respond with a userkey cookie.
 					
 					console.log("Error: Coin-Swap didn't send us a userkey cookie.");
 					
-				} else {
+			} else {														// If we successfully received a new userkey.cookie.
 					
 					console.log("Userkey cookie: %s", userkey_cookie);
 					result = userkey_cookie;
-					Save_cookie(result, function() {
+					Save_cookie(result, function() {						// Save the new userkey.cookie to disk.
 						
 						console.log("userkey.cookie saved to disk.");
 						callback(result);
@@ -151,10 +106,14 @@ var Load_userkey_cookie = function(config, callback) {
 				}
 			});
 		}
-	} else {
+	} else {																// If userkey.cookie file is found on disk.	
+
+		Load_cookie("userkey.cookie", function(result) {					// Load the userkey.cookie from disk.
+			
+			callback(result);
+			
+		});
 		
-		// Load_cookie("userkey.cookie")
-		callback(result);
 		return;
 	}
 };
