@@ -12,7 +12,7 @@ var Init_config = function(callback) {
 		
 		if (err) {
 			
-			console.log("Config file not found. Making a new one. You'll need to put your apikey and initkey from your coinswap account in this new bot.cfg file.");
+			console.log("Config file not found. Making a new one. You'll need to put your apikey and initkey (activation code) from your coinswap account in this new bot.cfg file.");
 			create_config();
 			
 		} else {

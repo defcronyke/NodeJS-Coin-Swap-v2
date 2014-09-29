@@ -1,3 +1,20 @@
+/*  
+    NodeJS Coin-Swap v2 API wrapper library
+    
+        Designed to make it easy to connect software with Coin-Swap.net.
+    
+    If you get this message:
+      "This request is not valid. Please request a new API initilization or 
+       contact support if the problem persists.."
+    You need to log into your Coin-Swap account, go to the Balance section,
+    then click on the API Settings tab. Where it says "Activate your API 
+    key", click the "Request Activation Code" button. The button will turn
+    into an activation code. You'll need to create a bot.cfg file in this
+    project's folder and put the activation code in it like so:
+       
+       {"apikey":"your-api-key-here","initkey":"your-activation-code-here"}
+*/
+
 var config_module = require("./config"),
 	cookie_module = require("./cookie_manager");
 
