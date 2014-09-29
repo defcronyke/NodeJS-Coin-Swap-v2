@@ -11,6 +11,7 @@ var Config = {
     "initkey": "",
 };
 
+// Load a config file or create a new one if it's not found.
 var Init_config = function(callback) {
 
     // try to read bot.cfg from disk
@@ -29,6 +30,7 @@ var Init_config = function(callback) {
     });
 };
 
+// Create a new config file.
 var create_config = function() {
 
     var conf_str = JSON.stringify(Config);

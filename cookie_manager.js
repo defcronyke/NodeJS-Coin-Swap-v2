@@ -82,6 +82,7 @@ var Get_userkey_cookie = function(activation_code, callback) {
     https.request(options, httpsclient_callback).end();    // Make an HTTPS request to Coin-Swap for a new userkey cookie.
 };
 
+// Load userkey cookie from disk, if not found retrieve a new one from Coin-Swap.
 var Load_userkey_cookie = function(config, callback) {
 
     var result;
@@ -117,7 +118,7 @@ var Load_userkey_cookie = function(config, callback) {
         Load_cookie("userkey.cookie", function(result) {  // Load the userkey.cookie from disk.
 
             callback(result);
-		});
+        });
 
         return;
     }
