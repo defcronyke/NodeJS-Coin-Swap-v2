@@ -14,17 +14,40 @@
 
 var config_module = require("./config"),
     cookie_module = require("./cookie_manager"),
-    client_module = require("./client");
+    coinswapapi = require("./coinswapapi");
 
 var main = (function() {
     
     // Public API   TODO: Make public API calls here.
     
-    client_module.DialCoinSwapPublic("https://api.coin-swap.net/market/stats/DOGE/BTC", 
-    function(res) {
-        console.log("Public API Response: %s", res);
+    // Examples
+    /*
+    coinswapapi.Getallmarkets(function(markets) {
+        console.log("Markets:");
+        console.log(markets);
     });
-    
+    */
+   
+    /*
+    coinswapapi.GetMarketHistory("DOGE/BTC", function(history) {
+        console.log("history:");
+        console.log(history);
+    });
+    */
+    /*
+    coinswapapi.GetMarketOrders("DOGE/BTC", "BUY", function(orders) {
+        console.log("orders:");
+        console.log(orders);
+    });
+    */
+   
+    /*
+    coinswapapi.GetMarketStats("DOGE/BTC", function(stats) {
+        console.log("stats:");
+        console.log(stats);
+    });
+    */
+        
     /*
         To use any private API calls you must have the config file initialized and filled out.
         Check for a config file. If there is no config file, create a blank template.
@@ -45,14 +68,54 @@ var main = (function() {
 
             console.log("Loaded userkey cookie.");
             
-            // TODO: Make private API calls here.
+            // TODO: Make private or public API calls here.
             
-            client_module.DialCoinSwapPrivate("https://api.coin-swap.net/balance/DOGE/"+config["apikey"], 
-                cookie, 
-                function(res) {
-                    console.log("Private API Response: %s", res);
-                }
-            );
+            // Examples:
+            /*
+            coinswapapi.Accountbalance(config, cookie, "DOGE", function(account) {
+                console.log("%s account balance: %s", account["symbol"], account["balance"]);
+            });
+            */
+            
+            /*
+            coinswapapi.Buy(config, 5835, 0.00000049, 100, cookie, function(order) {
+                console.log("order:");
+                console.log(order);
+                
+                coinswapapi.Cancelorder(config, cookie, order, function(cancelled_order) {
+                    console.log("order cancelled:");
+                    console.log(cancelled_order);
+                });
+            });
+            */
+            
+            /*
+            coinswapapi.Sell(config, 5835, 0.00000149, 100, cookie, function(order) {
+                console.log("order:");
+                console.log(order);
+            });
+            */
+           
+            /*
+            coinswapapi.ChangePrice(config, "vAKk2sYwhlUpG5utI1EJtvBm5GgMOIRE", 0.00000301, cookie, function(res) {
+                console.log("price changed:");
+                console.log(res);
+            });
+            */
+           
+            /*
+            coinswapapi.GetOpenorders(config, cookie, function(orders) {
+                console.log("open orders:");
+                console.log(orders);
+            });
+            */
+           
+            /*
+            coinswapapi.GetSingleorder(config, cookie, "1hTsGlUse5GDh9rFWC6S82nDQYOxCtzi", function(order) {
+                console.log("open order:");
+                console.log(order);
+            });
+            */
         });
     });
 
